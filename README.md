@@ -19,6 +19,8 @@
 
 ## 一、`miniprogram-saz-extract` — 从抓包文件里把数据捞出来
 
+![小程序抓包数据提取流程](docs/saz-pipeline.png)
+
 ### 卡在哪
 
 微信小程序的数据**经常没法从公网直接抓**。很多接口域名走微信 HTTPDNS，
@@ -54,6 +56,8 @@
 ---
 
 ## 二、`singlefile-data-page-perf` — 把几 MB 的页面救回跟手
+
+![单文件页面优化前后对比](docs/perf-before-after.png)
 
 ### 问题
 
