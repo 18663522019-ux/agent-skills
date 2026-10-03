@@ -92,7 +92,7 @@
 以 WorkBuddy / Claude Code 为例：
 
 ```bash
-git clone https://github.com/<your-account>/agent-skills.git
+git clone https://github.com/18663522019-ux/agent-skills.git
 
 # 用户级（所有项目可用）
 cp -r agent-skills/skills/* ~/.workbuddy/skills/
