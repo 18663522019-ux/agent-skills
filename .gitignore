@@ -1,0 +1,24 @@
+# 抓包文件（体积大且可能含账号凭证，绝不入库）
+*.saz
+*.pcap
+*.har
+
+# 抓到的原始数据
+*_raw.json
+*_cache.json
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# 系统
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 编辑器
+.vscode/
+.idea/
+*.swp
