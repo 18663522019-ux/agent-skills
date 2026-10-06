@@ -42,8 +42,9 @@
 
 ### 修正
 
-- `README` 里的 `git clone` 地址与实际仓库不一致（指向了另一个账号），已更正为
-  `https://github.com/xfnylqt/agent-skills.git`。
+- `README` 里的 `git clone` 地址用的是旧用户名 `18663522019-ux`。
+  该地址经 GitHub 301 跳转**仍然可用**（实测 `git ls-remote` 能正常取到分支），
+  但依赖重定向不够干净，已改为当前的 `xfnylqt`。
 - `.gitignore` 补充排除路由器固件/备份/运行日志（`*.bin`、`*.ubi`、`*.fip`、`rescue.log` 等），
   避免大体积固件与设备标识入库。
 
