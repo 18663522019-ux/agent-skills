@@ -4,6 +4,51 @@
 
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [1.1.0] — 2026-10-06
+
+新增第三个技能：给小米 AX3000T 刷 OpenWrt 并把无线性能榨到超过它的千兆有线口。
+这次实战中间**真砖了一次**，靠 TFTP 救回来、换正确方式重刷成功——所以这个技能的重点
+不在"怎么刷"，而在"哪几个判断会把设备刷成砖"，以及"怎么把一个砖掉的设备捞回来"。
+
+### 新增
+
+- **`xiaomi-router-openwrt-flash`** — 小米/红米 MT7981 机型刷 OpenWrt + 性能榨干 + 变砖救援
+  - **UBI 镜像必须用 `ubiformat`**：`mtd -e write` 对 NAND 坏块/EC 头处理错误，
+    是「上传成功、校验一致、重启后永远回恢复模式」的头号真凶
+  - **判启动槽只看开机后实时的 `/proc/cmdline`**：旧备份里的 `firmware=` 会被救砖流程翻转
+    （实战中备份里是 `firmware=1`，救砖后实测变成 `firmware=0`）
+  - **TFTP 服务器绝不能每 0.3 秒无条件重发**：会向 bootloader 灌重复包致缓冲错位，
+    表症是「每次都显示传输完成、路由器却始终刷不进去」。改为标准超时重传
+    （1.5s 未收到**期望的** ACK 才重发），并忽略客户端旧 ACK
+  - 三态指示灯语义（橙闪=下载中 / **蓝闪=刷写成功** / 白常亮=文件被拒），
+    以及 stock U-Boot 刷完会 **halt** —— 收尾必须「断电后直接插回，不碰 Reset」
+  - **WED 无线硬件卸载**：MT7981 最大收益项，但 `mt7915e` **不支持运行时 rmmod/insmod**
+    （rmmod 返回 0 却抛内核 WARNING，modprobe 参数不生效），只能写配置 + 重启，
+    且必须配开机自检回滚守护
+  - 双频同名会让设备连到 2.4G（协商速率 2402 → 287 Mbps）；2.4G 信道必须用
+    survey **差值法**实测（累计值直读无意义）
+  - 连 OpenWrt 的 SSH 必须换姿势：便携 Python 的旧 libssh2 与 dropbear 做
+    KEX 不兼容，改用系统 OpenSSH + `SSH_ASKPASS_REQUIRE=force`
+  - 5 个可直接运行的脚本：`flash_openwrt.py`（含 6 步自检）、`wed_guard.sh`、
+    `wed_diag.sh`、`chscan_24g.sh`、`tftp_rescue_server.py`（DHCP+TFTP 二合一）
+  - `references/troubleshooting.md`：按「表症 → 真因 → 处置」组织的完整踩坑记录
+
+- 实测性能数据（iperf3，客户端 Intel AX201 160MHz）：
+  4 流上行 675 → **1270 Mbps（+88%）**，单流下行 628 → **822 Mbps（+31%）**。
+  AX3000T 的 4 个有线口都是千兆，所以无线 160MHz 已经**超过它自己的有线口**。
+- 补充「什么时候该停手」的判据：功率顶国标（5G 23dBm / 2.4G 20dBm）、
+  hostapd 配置全项最优、flowtable 真实生效、温度正常 —— 都满足即无参数空间，
+  余量只剩物理手段（摆放、有线回程 mesh）。
+
+### 修正
+
+- `README` 里的 `git clone` 地址与实际仓库不一致（指向了另一个账号），已更正为
+  `https://github.com/xfnylqt/agent-skills.git`。
+- `.gitignore` 补充排除路由器固件/备份/运行日志（`*.bin`、`*.ubi`、`*.fip`、`rescue.log` 等），
+  避免大体积固件与设备标识入库。
+
+---
+
 ## [1.0.0] — 2026-10-03
 
 首次发布，收录两个技能：一个解决"小程序数据抓不到"，一个解决"抓到数据后页面太卡"。

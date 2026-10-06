@@ -7,6 +7,15 @@
 *_raw.json
 *_cache.json
 
+# 路由器固件 / 备份 / 运行日志（体积大，且可能含设备 SN 等标识）
+*.bin
+*.ubi
+*.itb
+*.fip
+mtd*_*.bin
+rescue.log
+server*.out
+
 # Python
 __pycache__/
 *.py[cod]
